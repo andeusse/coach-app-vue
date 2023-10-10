@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import withUUID from 'vue-uuid';
 
 import App from './App.vue';
 import router from './router/router';
@@ -8,7 +9,7 @@ import BaseButton from './components/ui/BaseButton.vue';
 import BaseBadge from './components/ui/BaseBadge.vue';
 
 const pinia = createPinia();
-const app = createApp(App);
+const app = withUUID(createApp(App));
 
 app.use(pinia);
 app.use(router);

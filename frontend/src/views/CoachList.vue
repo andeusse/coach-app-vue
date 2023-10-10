@@ -1,7 +1,8 @@
 <template>
   <section>
-    <h2>Coach List</h2>
-    <section>FILTER</section>
+    <section>
+      <coach-filter @filter-changed="filterChanged"></coach-filter>
+    </section>
     <base-card>
       <div class="controls">
         <base-button mode="outline">Refresh</base-button>
@@ -16,25 +17,50 @@
 </template>
 
 <script lang="ts">
+import type IFilters from '../types/IFilters';
+import CoachFilter from '../components/CoachFilter.vue';
 import CoachItem from '../components/CoachItem.vue';
-import BaseButton from '../components/ui/BaseButton.vue';
-import BaseCard from '../components/ui/BaseCard.vue';
+
 import { useCoachesStore } from '../stores/coaches/index';
 
 export default {
   components: {
     CoachItem,
-    BaseCard,
-    BaseButton,
+    CoachFilter,
+  },
+  data() {
+    return {
+      filters: {
+        frontend: true,
+        backend: true,
+        career: true,
+      } as IFilters,
+    };
   },
   computed: {
     filteredCoaches() {
-      const store = useCoachesStore();
-      return store.getCoaches;
+      const coaches = useCoachesStore().getCoaches;
+      const filteredCoaches = coaches.filter((coach) => {
+        if (this.filters.frontend && coach.areas.includes('frontend')) {
+          return coach;
+        }
+        if (this.filters.backend && coach.areas.includes('backend')) {
+          return coach;
+        }
+        if (this.filters.career && coach.areas.includes('career')) {
+          return coach;
+        }
+      });
+      return filteredCoaches;
     },
     hasCoaches() {
       const store = useCoachesStore();
       return store.hasCoaches;
+    },
+  },
+  methods: {
+    filterChanged(filters: IFilters) {
+      this.filters = filters;
     },
   },
 };
