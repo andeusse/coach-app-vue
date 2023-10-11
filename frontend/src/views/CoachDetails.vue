@@ -11,7 +11,6 @@
       <base-card>
         <header>
           <h2>Interested? Reach out now!</h2>
-          <base-button link :to="contactLink">Contact</base-button>
         </header>
         <router-view></router-view>
       </base-card>
@@ -39,9 +38,6 @@ export default {
     coach() {
       const store = useCoachesStore();
       return store.getCoaches.find((coach) => coach.id === this.id);
-    },
-    contactLink() {
-      return `${this.$route.path}/${this.id}/contact`;
     },
   },
 };

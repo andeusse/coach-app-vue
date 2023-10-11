@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import getters from './getters';
 import actions from './actions';
+import { uuid } from 'vue-uuid';
 
 export const useCoachesStore = defineStore('coaches', {
   state: () => ({
     coaches: [
       {
-        id: 'c1',
+        id: uuid.v4(),
         firstName: 'Maximilian',
         lastName: 'Schwarzmüller',
         areas: ['frontend', 'backend', 'career'],
@@ -15,7 +16,7 @@ export const useCoachesStore = defineStore('coaches', {
         hourlyRate: 30,
       },
       {
-        id: 'c2',
+        id: uuid.v4(),
         firstName: 'Julie',
         lastName: 'Jones',
         areas: ['frontend', 'career'],

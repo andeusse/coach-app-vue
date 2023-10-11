@@ -1,23 +1,24 @@
 <template>
-  <form @submit.prevent="submitForm">
-    <div class="form-control">
+  <form @submit.prevent="submitForm" @keypress="onFormChange" @change="onFormChange">
+    <base-message v-if="!isFormValid" text="Fix the errors in the form" type="error"></base-message>
+    <div class="form-control" :class="{ invalid: !areFieldsValid.firstName }">
       <label for="firsname">Firsname</label>
-      <input type="text" id="firstname" v-model.trim="firstName" />
+      <input type="text" id="firstname" v-model.trim="coach.firstName" />
     </div>
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: !areFieldsValid.lastName }">
       <label for="lastname">Lastname</label>
-      <input type="text" id="lastname" v-model.trim="lastName" />
+      <input type="text" id="lastname" v-model.trim="coach.lastName" />
     </div>
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: !areFieldsValid.description }">
       <label for="description">Description</label>
-      <textarea id="description" rows="5" v-model.trim="description"></textarea>
+      <textarea id="description" rows="5" v-model.trim="coach.description"></textarea>
     </div>
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: !areFieldsValid.hourlyRate }">
       <label for="hourlyrate">Hourly Rate</label>
-      <input type="number" id="hourlyrate" v-model.number="hourlyRate" />
+      <input type="number" id="hourlyrate" v-model.number="coach.hourlyRate" />
     </div>
-    <div class="form-control">
-      <h3>Areas of expertise</h3>
+    <div class="form-control" :class="{ invalid: !areFieldsValid.areas }">
+      <label>Areas of expertise</label>
       <div class="filter-option">
         <input type="checkbox" id="frontend" @change="updateAreas" />
         <label for="frontend">Frontend</label>
@@ -36,19 +37,28 @@
 </template>
 
 <script lang="ts">
-import BaseButton from './ui/BaseButton.vue';
 import type ICoach from '../types/ICoach';
 export default {
-  components: { BaseButton },
+  emits: ['save-coach'],
   data() {
     return {
-      id: this.$uuid.v4(),
-      firstName: '',
-      lastName: '',
-      areas: [],
-      description: '',
-      hourlyRate: 10,
-    } as ICoach;
+      coach: {
+        id: this.$uuid.v4(),
+        firstName: '',
+        lastName: '',
+        areas: [],
+        description: '',
+        hourlyRate: 10,
+      } as ICoach,
+      areFieldsValid: {
+        firstName: true,
+        lastName: true,
+        areas: true,
+        description: true,
+        hourlyRate: true,
+      },
+      isFormValid: true as boolean,
+    };
   },
   methods: {
     updateAreas(event: Event) {
@@ -57,14 +67,54 @@ export default {
         const id = target.id;
         const checked = target.checked;
         if (checked) {
-          this.areas.push(id);
+          this.coach.areas.push(id);
         } else {
-          this.areas = this.areas.filter((area: string) => area !== id);
+          this.coach.areas = this.coach.areas.filter((area: string) => area !== id);
         }
       }
     },
+    onFormChange() {
+      this.validateForm();
+    },
+    validateForm() {
+      this.isFormValid = true;
+      if (this.coach.firstName === '' || this.coach.firstName.length < 3) {
+        this.areFieldsValid.firstName = false;
+        this.isFormValid = false;
+      } else {
+        this.areFieldsValid.firstName = true;
+      }
+      if (this.coach.lastName === '' || this.coach.lastName.length < 3) {
+        this.areFieldsValid.lastName = false;
+        this.isFormValid = false;
+      } else {
+        this.areFieldsValid.lastName = true;
+      }
+      if (this.coach.description === '' || this.coach.description.length < 20) {
+        this.areFieldsValid.description = false;
+        this.isFormValid = false;
+      } else {
+        this.areFieldsValid.description = true;
+      }
+      if (this.coach.hourlyRate <= 0) {
+        this.areFieldsValid.hourlyRate = false;
+        this.isFormValid = false;
+      } else {
+        this.areFieldsValid.hourlyRate = true;
+      }
+      if (this.coach.areas.length === 0) {
+        this.areFieldsValid.areas = false;
+        this.isFormValid = false;
+      } else {
+        this.areFieldsValid.areas = true;
+      }
+    },
     submitForm() {
-      console.log(this.$data as ICoach);
+      this.validateForm();
+      if (this.isFormValid) {
+        this.$emit('save-coach', this.$data.coach as ICoach);
+        this.$router.push('/coaches');
+      }
     },
   },
 };
@@ -120,7 +170,6 @@ h3 {
 .invalid label {
   color: red;
 }
-
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
