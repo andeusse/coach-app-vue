@@ -17,12 +17,15 @@
 
 <script lang="ts">
 import type IMessage from '@/types/IMessage';
+import { useRequestsStore } from '@/stores/requests';
 import validateEmail from '../utils/ValidateEmail';
 
 export default {
   data() {
     return {
       message: {
+        id: this.$uuid.v4(),
+        coachId: this.$router.currentRoute.value.params.id,
         email: '',
         message: '',
       },
@@ -55,7 +58,7 @@ export default {
     submitForm() {
       this.validateForm();
       if (this.isFormValid) {
-        this.$emit('save-message', this.$data.message as IMessage);
+        useRequestsStore().addRequest(useRequestsStore(), this.$data.message as IMessage);
         this.$router.push('/coaches');
       }
     },

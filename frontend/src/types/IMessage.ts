@@ -1,4 +1,6 @@
 export default interface IMessage {
-  email: String;
-  message: String;
+  id: string;
+  coachId: string;
+  email: string;
+  message: string;
 }

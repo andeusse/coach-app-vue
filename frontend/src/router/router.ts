@@ -4,7 +4,7 @@ import CoachList from '@/views/CoachList.vue';
 import RegisterCoach from '@/views/RegisterCoach.vue';
 import CoachDetails from '@/views/CoachDetails.vue';
 import CoachContact from '@/views/CoachContact.vue';
-import RequestsCoach from '@/views/RequestsCoach.vue';
+import CoachRequests from '@/views/CoachRequests.vue';
 import NotFound from '@/views/NotFound.vue';
 
 const routes = [
@@ -17,7 +17,7 @@ const routes = [
     children: [{ path: 'contact', component: CoachContact }],
   },
   { path: '/register', component: RegisterCoach },
-  { path: '/requests', component: RequestsCoach },
+  { path: '/requests', component: CoachRequests },
   { path: '/:notFound(.*)', component: NotFound },
 ];
 

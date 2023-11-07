@@ -38,6 +38,7 @@
 
 <script lang="ts">
 import type ICoach from '../types/ICoach';
+
 export default {
   emits: ['save-coach'],
   data() {

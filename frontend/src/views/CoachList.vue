@@ -5,7 +5,7 @@
     </section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline">Refresh</base-button>
+        <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
         <base-button link to="/register">Register as a Coach</base-button>
       </div>
       <ul v-if="hasCoaches">
@@ -62,6 +62,12 @@ export default {
     filterChanged(filters: IFilters) {
       this.filters = filters;
     },
+    loadCoaches() {
+      useCoachesStore().loadCoaches(useCoachesStore());
+    },
+  },
+  created() {
+    this.loadCoaches();
   },
 };
 </script>

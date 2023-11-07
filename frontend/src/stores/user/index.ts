@@ -2,9 +2,10 @@ import { defineStore } from 'pinia';
 import getters from './getters';
 import actions from './actions';
 
-export const useCoachesStore = defineStore('coaches', {
+export const useUserStore = defineStore('user', {
   state: () => ({
-    coaches: [],
+    user: String,
+    isLoading: Boolean,
   }),
   getters: getters,
   actions: actions,

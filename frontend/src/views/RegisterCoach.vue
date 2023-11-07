@@ -12,12 +12,22 @@ import CoachForm from '../components/CoachForm.vue';
 import BaseCard from '../components/ui/BaseCard.vue';
 import { useCoachesStore } from '../stores/coaches';
 import type ICoach from '../types/ICoach';
+import { addCoach } from '../api/coach';
 
 export default {
   components: { CoachForm, BaseCard },
   methods: {
     saveCoach(coach: ICoach) {
-      useCoachesStore().addCoach(useCoachesStore(), coach);
+      addCoach(coach)
+        .then((data) => {
+          useCoachesStore().addCoach(useCoachesStore(), coach);
+        })
+        .catch((error) => {
+          // Show error
+        })
+        .finally(() => {
+          // Set loading false
+        });
     },
   },
 };
