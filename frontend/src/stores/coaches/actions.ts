@@ -11,6 +11,11 @@ const actions = {
   },
   async loadCoaches(state: ICoachState) {
     const response: any = await getCoaches();
+
+    if (response.ok) {
+      throw new Error(response.message || 'Failed to fetch coaches, try again!');
+    }
+
     const data: any = response.data;
     const coaches: ICoach[] = [];
     for (const key in data) {

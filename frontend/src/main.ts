@@ -8,6 +8,7 @@ import BaseCard from './components/ui/BaseCard.vue';
 import BaseButton from './components/ui/BaseButton.vue';
 import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseMessage from './components/ui/BaseMessage.vue';
+import BaseSpinner from './components/ui/BaseSpinner.vue';
 
 const pinia = createPinia();
 const app = withUUID(createApp(App));
@@ -19,5 +20,6 @@ app.component('base-card', BaseCard);
 app.component('base-button', BaseButton);
 app.component('base-badge', BaseBadge);
 app.component('base-message', BaseMessage);
+app.component('base-spinner', BaseSpinner);
 
 app.mount('#app');

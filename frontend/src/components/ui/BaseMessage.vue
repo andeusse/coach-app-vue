@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import MessageTypes from '@/types/MessageTypes';
+import MessageTypes from '../../types/MessageTypes';
 
 export default {
   props: {

@@ -8,9 +8,11 @@
         <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
         <base-button link to="/register">Register as a Coach</base-button>
       </div>
-      <ul v-if="hasCoaches">
+      <base-spinner v-if="isLoading"></base-spinner>
+      <ul v-else-if="hasCoaches">
         <coach-item v-for="coach in filteredCoaches" :key="coach.id" :coach="coach"></coach-item>
       </ul>
+      <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
       <h3 v-else>No coaches found</h3>
     </base-card>
   </section>
@@ -22,11 +24,13 @@ import CoachFilter from '../components/CoachFilter.vue';
 import CoachItem from '../components/CoachItem.vue';
 
 import { useCoachesStore } from '../stores/coaches/index';
+import BaseMessage from '../components/ui/BaseMessage.vue';
 
 export default {
   components: {
     CoachItem,
     CoachFilter,
+    BaseMessage,
   },
   data() {
     return {
@@ -35,6 +39,8 @@ export default {
         backend: true,
         career: true,
       } as IFilters,
+      isLoading: false as boolean,
+      error: '' as string,
     };
   },
   computed: {
@@ -55,7 +61,7 @@ export default {
     },
     hasCoaches() {
       const store = useCoachesStore();
-      return store.hasCoaches;
+      return store.hasCoaches && !this.isLoading;
     },
   },
   methods: {
@@ -63,7 +69,17 @@ export default {
       this.filters = filters;
     },
     loadCoaches() {
-      useCoachesStore().loadCoaches(useCoachesStore());
+      this.isLoading = true;
+      useCoachesStore()
+        .loadCoaches(useCoachesStore())
+        .then(() => {
+          this.error = '';
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.isLoading = false;
+        });
     },
   },
   created() {

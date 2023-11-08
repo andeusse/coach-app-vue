@@ -5,7 +5,6 @@ import actions from './actions';
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: String,
-    isLoading: Boolean,
   }),
   getters: getters,
   actions: actions,
