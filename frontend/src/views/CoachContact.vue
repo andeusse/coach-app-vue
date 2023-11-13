@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="submitForm" @keypress="onFormChange" @change="onFormChange">
+    <base-spinner v-if="isLoading"></base-spinner>
+    <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
     <base-message v-if="!isFormValid" text="Fix the errors in the form" type="error"></base-message>
     <div class="form-control" :class="{ invalid: !areFieldsValid.email }">
       <label for="email">Email</label>
@@ -16,9 +18,10 @@
 </template>
 
 <script lang="ts">
-import type IMessage from '@/types/IMessage';
-import { useRequestsStore } from '@/stores/requests';
+import type IMessage from '../types/IMessage';
+import { useRequestsStore } from '../stores/requests';
 import validateEmail from '../utils/ValidateEmail';
+import { addRequest } from '../api/request';
 
 export default {
   data() {
@@ -34,6 +37,8 @@ export default {
         message: true,
       },
       isFormValid: true,
+      isLoading: false as boolean,
+      error: '' as string,
     };
   },
   methods: {
@@ -58,8 +63,19 @@ export default {
     submitForm() {
       this.validateForm();
       if (this.isFormValid) {
-        useRequestsStore().addRequest(useRequestsStore(), this.$data.message as IMessage);
-        this.$router.push('/coaches');
+        this.isLoading = true;
+        const data = this.$data.message as IMessage;
+        addRequest(data)
+          .then(() => {
+            useRequestsStore().addRequest(useRequestsStore(), this.$data.message as IMessage);
+            this.$router.push('/coaches');
+            this.error = '';
+            this.isLoading = false;
+          })
+          .catch((error) => {
+            this.error = error.message;
+            this.isLoading = false;
+          });
       }
     },
   },

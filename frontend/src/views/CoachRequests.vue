@@ -4,8 +4,10 @@
       <header>
         <h2>Requests Received</h2>
       </header>
+      <base-spinner v-if="isLoading"></base-spinner>
+      <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
       <base-message
-        v-if="!hasRequests"
+        v-else-if="!hasRequests"
         text="You have no requests yet"
         type="information"
       ></base-message>
@@ -21,12 +23,18 @@
 </template>
 
 <script lang="ts">
-import { useRequestsStore } from '@/stores/requests';
+import { useRequestsStore } from '../stores/requests';
 import BaseMessage from '../components/ui/BaseMessage.vue';
 import CoachRequestItem from '../components/CoachRequestItem.vue';
 
 export default {
   components: { BaseMessage, CoachRequestItem },
+  data() {
+    return {
+      isLoading: false as boolean,
+      error: '' as string,
+    };
+  },
   computed: {
     hasRequests() {
       const hasRequests = useRequestsStore().hasRequests;
@@ -35,6 +43,24 @@ export default {
     receivedRequests() {
       return useRequestsStore().getRequests;
     },
+  },
+  methods: {
+    loadRequests() {
+      this.isLoading = true;
+      useRequestsStore()
+        .loadRequests(useRequestsStore())
+        .then(() => {
+          this.error = '';
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.isLoading = false;
+        });
+    },
+  },
+  created() {
+    this.loadRequests();
   },
 };
 </script>

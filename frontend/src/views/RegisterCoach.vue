@@ -1,6 +1,8 @@
 <template>
   <section>
-    <base-card>
+    <base-spinner v-if="isLoading"></base-spinner>
+    <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
+    <base-card v-else>
       <h2>Register as a coach now!</h2>
       <coach-form @save-coach="saveCoach"></coach-form>
     </base-card>
@@ -16,17 +18,24 @@ import { addCoach } from '../api/coach';
 
 export default {
   components: { CoachForm, BaseCard },
+  data() {
+    return {
+      isLoading: false as boolean,
+      error: '' as string,
+    };
+  },
   methods: {
     saveCoach(coach: ICoach) {
+      this.isLoading = true;
       addCoach(coach)
-        .then((data) => {
+        .then(() => {
           useCoachesStore().addCoach(useCoachesStore(), coach);
+          this.isLoading = false;
+          this.error = '';
         })
         .catch((error) => {
-          // Show error
-        })
-        .finally(() => {
-          // Set loading false
+          this.isLoading = false;
+          this.error = error.message;
         });
     },
   },

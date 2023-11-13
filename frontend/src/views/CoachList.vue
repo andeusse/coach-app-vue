@@ -9,10 +9,10 @@
         <base-button link to="/register">Register as a Coach</base-button>
       </div>
       <base-spinner v-if="isLoading"></base-spinner>
+      <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
       <ul v-else-if="hasCoaches">
         <coach-item v-for="coach in filteredCoaches" :key="coach.id" :coach="coach"></coach-item>
       </ul>
-      <base-message v-else-if="!!error" :text="error" :type="'error'"></base-message>
       <h3 v-else>No coaches found</h3>
     </base-card>
   </section>
